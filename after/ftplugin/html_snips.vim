@@ -37,12 +37,12 @@ exe 'Snip backspace &#x232B;'
 " ⎋
 exe 'Snip escape &#x238B;'
 " Generic Doctype
-exe 'Snip! doctype "HTML 4.01 Strict" <!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01//EN\"\"\n\"http://www.w3.org/TR/html4/strict.dtd\">'
-exe 'Snip! doctype "HTML 4.01 Transitional" <!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\"\"\n\"http://www.w3.org/TR/html4/loose.dtd\">'
-exe 'Snip! doctype "XHTML 1.0 Frameset" <!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\"\n\"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">'
-exe 'Snip! doctype "XHTML 1.0 Strict" <!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\"\n\"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">'
-exe 'Snip! doctype "XHTML 1.0 Transitional" <!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\"\n\"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">'
-exe 'Snip! doctype "XHTML 1.1" <!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.1//EN\"\n\"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd\">'
+exe "Snip! doctype \"HTML 4.01 Strict\" <!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01//EN\"\"\n\"http://www.w3.org/TR/html4/strict.dtd\">"
+exe "Snip! doctype \"HTML 4.01 Transitional\" <!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\"\"\n\"http://www.w3.org/TR/html4/loose.dtd\">"
+exe "Snip! doctype \"XHTML 1.0 Frameset\" <!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\"\n\"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">"
+exe "Snip! doctype \"XHTML 1.0 Strict\" <!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\"\n\"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">"
+exe "Snip! doctype \"XHTML 1.0 Transitional\" <!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\"\n\"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">"
+exe "Snip! doctype \"XHTML 1.1\" <!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.1//EN\"\n\"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd\">"
 " HTML Doctype 4.01 Strict
 exe "Snip docts <!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01//EN\"\"\n\"http://www.w3.org/TR/html4/strict.dtd\">"
 " HTML Doctype 4.01 Transitional

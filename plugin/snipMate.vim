@@ -8,7 +8,7 @@
 "                For more help see snipMate.txt; you can do this by doing:
 "                :helptags ~/.vim/doc
 "                :h snipMate.txt
-" Last Modified: February 7, 2009.
+" Last Modified: February 12, 2009.
 
 if exists('g:loaded_snips') || &cp || version < 700
 	fini
@@ -20,13 +20,6 @@ au FileType vim let b:Snippet_snip = 'exe "Snip ${1:trigger}"${2}'
 			\|  let b:Snippet_snipp = "exe 'Snip ${1:trigger}'${2}"
 			\|  let b:Snippet_gsnip = 'exe "GlobalSnip ${1:trigger}"${2}'
 			\|  let b:Snippet_gsnipp = "exe 'GlobalSnip ${1:trigger}'${2}"
-
-ino <tab> <c-r>=<SID>ExpandSnippet()<cr>
-snor <tab> <esc>i<right><c-r>=<SID>ExpandSnippet()<cr>
-snor <bs> b<bs>
-snor ' b<bs>'
-snor <right> <esc>a
-snor <left> <esc>bi
 
 com! -nargs=+ -bang Snip cal s:MakeSnippet(<q-args>, 'b', <bang>0)
 com! -nargs=+ -bang GlobalSnip cal s:MakeSnippet(<q-args>, 'g', <bang>0)
@@ -49,9 +42,10 @@ fun s:MakeSnippet(text, scope, bang)
 	let space = stridx(a:text, ' ')
 	let trigger = s:Hash(strpart(a:text, 0, space))
 	if a:bang
-		let quote = stridx(a:text, '"', space+2)
-		let name = strpart(a:text, space+2, quote-(space+2))
-		let space = stridx(a:text, ' ', quote)
+		let space += 2
+		let quote   = stridx(a:text, '"', space)
+		let name    = strpart(a:text, space, quote-space)
+		let space   = stridx(a:text, ' ', quote)
 		let trigger = a:scope.':Snippets_'.trigger
 	el
 		let trigger = a:scope.':Snippet_'.trigger
@@ -155,16 +149,16 @@ fun s:ChooseSnippet(snippet)
 endf
 
 fun s:Count(haystack, needle)
-    let counter = 0
-    let index = stridx(a:haystack, a:needle)
-    wh index != -1
-        let counter += 1
-        let index = stridx(a:haystack, a:needle, index+1)
-    endw
-    retu counter
+	let counter = 0
+	let index = stridx(a:haystack, a:needle)
+	wh index != -1
+		let counter += 1
+		let index = stridx(a:haystack, a:needle, index+1)
+	endw
+	retu counter
 endf
 
-fun s:ExpandSnippet()
+fun! ExpandSnippet()
 	if !exists('s:snipPos') " don't expand snippets within snippets
 		" get word under cursor
 		let word = matchstr(getline('.'), '\(^\|\s\)\zs\S\+\%'.col('.').'c\ze\($\|\s\)')
@@ -181,7 +175,8 @@ fun s:ExpandSnippet()
 		en
 
 		if exists('snippet')
-			" if snippet == '' | retu '' | en " if user cancelled multi snippet, quit
+			if snippet == '' | retu '' | en " if user cancelled multi snippet, quit
+            " let tab = supertab ? Funcref()
 			" if word is a trigger for a snippet, delete the trigger & expand
 			" the snippet (BdE doesn't work for just a single character)
 			if len == 1 | norm! h"_x
@@ -191,7 +186,7 @@ fun s:ExpandSnippet()
 			let col = col('.')
 
 			let afterCursor = strpart(getline('.'), col-1)
-			if afterCursor != "\t" && afterCursor != ' ' | s/\%#.*//
+			if afterCursor != "\t" && afterCursor != ' ' | sil s/\%#.*//
 			el | let afterCursor = '' | en
 
 			" evaluate eval expressions
@@ -218,6 +213,8 @@ fun s:ExpandSnippet()
 				en
 				let i += 1
 			endw
+			" expand tabs to spaces if 'expandtab' is set
+			if &et | let snippet = substitute(snippet, '\t', repeat(' ', &ts), 'g') | en
 
 			let snip = split(substitute(snippet, '$\d\|${\d.\{-}}', '', 'g'), "\n", 1)
 			if afterCursor != '' | let snip[-1] .= afterCursor | en
@@ -293,7 +290,11 @@ fun s:ExpandSnippet()
 			en
 			retu ''
 		en
-		retu "\<tab>"
+		if !exists('s:sid') && exists('g:SuperTabMappingForward') 
+					\ && g:SuperTabMappingForward == "<tab>"
+			s:GetSupertabSID()
+		en
+		retu exists('s:sid') ? {s:sid}_SuperTab('n') : "\<tab>"
 	en
 
 	if exists('s:update')
@@ -356,7 +357,7 @@ fun s:ExpandSnippet()
 	if s:curPos == s:snipLen
 		let sMode = s:endSnip == s:snipPos[s:curPos-1][1]+s:snipPos[s:curPos-1][2]
 		cal s:RemoveSnippet()
-		retu sMode ? "\<tab>" : s:ExpandSnippet()
+		retu sMode ? "\<tab>" : ExpandSnippet()
 	en
 	if changeLine != 0 || changeCol != 0
 		" there's probably a more efficient way to do this as well...
@@ -407,15 +408,24 @@ fun s:ExpandSnippet()
 	retu ''
 endf
 
+fun s:GetSupertabSID()
+	let a_save = @a
+	redir @a
+	exe 'sil fun'
+	redir END
+	let s:sid = matchstr(@a, '<SNR>\d\+\ze_SuperTab(command)')
+	let @a = a_save
+endf
+
 fun s:SelectWord()
 	let s:origWordLen = s:snipPos[s:curPos][2]
 	let s:oldWord     = strpart(getline('.'), s:snipPos[s:curPos][1]-1,
 								\ s:origWordLen)
 	let s:prevLen[1] -= s:origWordLen
 	if !empty(s:snipPos[s:curPos][3])
-		let s:update     = 1
-		let s:endSnip    = -1
-		let s:startSnip  = s:snipPos[s:curPos][1]-1
+		let s:update    = 1
+		let s:endSnip   = -1
+		let s:startSnip = s:snipPos[s:curPos][1]-1
 	en
 	if !s:origWordLen | retu '' | en
 	let l = col('.') != 1 ? 'l' : ''

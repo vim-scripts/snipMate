@@ -9,7 +9,7 @@ exe "Snip sub sub ${1:function_name} {\n\t${2:#body ...}\n}"
 " Conditional
 exe "Snip if if (${1}) {\n\t${2:# body...}\n}"
 " Conditional if..else
-exe "Snip ife if $(${1}) {\n\t${2:# body...}\n} else {\n\t${3:# else...}\n}"
+exe "Snip ife if (${1}) {\n\t${2:# body...}\n} else {\n\t${3:# else...}\n}"
 " Conditional if..elsif..else
 exe "Snip ifee if (${1}) {\n\t${2:# body...}\n} elsif (${3}) {\n\t${4:# elsif...}\n} else {\n\t${5:# else...}\n}"
 " Conditional One-line
