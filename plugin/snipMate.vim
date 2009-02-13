@@ -1,6 +1,6 @@
 " File:          snipMate.vim
 " Author:        Michael Sanders
-" Version:       0.42
+" Version:       0.61803
 " Description:   snipMate.vim implements some of TextMate's snippets features in
 "                Vim. A snippet is a piece of often-typed text that you can
 "                insert into your document using a trigger word followed by a "<tab>".
@@ -8,7 +8,7 @@
 "                For more help see snipMate.txt; you can do this by doing:
 "                :helptags ~/.vim/doc
 "                :h snipMate.txt
-" Last Modified: February 12, 2009.
+" Last Modified: February 13, 2009.
 
 if exists('g:loaded_snips') || &cp || version < 700
 	fini
@@ -16,13 +16,13 @@ en
 let g:loaded_snips = 1
 
 " snippets for making snippets :)
-au FileType vim let b:Snippet_snip = 'exe "Snip ${1:trigger}"${2}'
-			\|  let b:Snippet_snipp = "exe 'Snip ${1:trigger}'${2}"
+au FileType vim let b:Snippet_snip = 'exe "Snipp ${1:trigger}"${2}'
+			\|  let b:Snippet_snipp = "exe 'Snipp ${1:trigger}'${2}"
 			\|  let b:Snippet_gsnip = 'exe "GlobalSnip ${1:trigger}"${2}'
 			\|  let b:Snippet_gsnipp = "exe 'GlobalSnip ${1:trigger}'${2}"
 
-com! -nargs=+ -bang Snip cal s:MakeSnippet(<q-args>, 'b', <bang>0)
-com! -nargs=+ -bang GlobalSnip cal s:MakeSnippet(<q-args>, 'g', <bang>0)
+com! -nargs=+ -bang Snipp cal s:MakeSnippet(<q-args>, 'b', <bang>0)
+com! -nargs=+ -bang GlobalSnipp cal s:MakeSnippet(<q-args>, 'g', <bang>0)
 
 if !exists('g:snips_author') | let g:snips_author = 'Me' | en
 
@@ -176,7 +176,6 @@ fun! ExpandSnippet()
 
 		if exists('snippet')
 			if snippet == '' | retu '' | en " if user cancelled multi snippet, quit
-            " let tab = supertab ? Funcref()
 			" if word is a trigger for a snippet, delete the trigger & expand
 			" the snippet (BdE doesn't work for just a single character)
 			if len == 1 | norm! h"_x
@@ -214,7 +213,7 @@ fun! ExpandSnippet()
 				let i += 1
 			endw
 			" expand tabs to spaces if 'expandtab' is set
-			if &et | let snippet = substitute(snippet, '\t', repeat(' ', &ts), 'g') | en
+			if &et | let snippet = substitute(snippet, '\t', repeat(' ', &sts), 'g') | en
 
 			let snip = split(substitute(snippet, '$\d\|${\d.\{-}}', '', 'g'), "\n", 1)
 			if afterCursor != '' | let snip[-1] .= afterCursor | en
@@ -292,7 +291,7 @@ fun! ExpandSnippet()
 		en
 		if !exists('s:sid') && exists('g:SuperTabMappingForward') 
 					\ && g:SuperTabMappingForward == "<tab>"
-			s:GetSupertabSID()
+			cal s:GetSupertabSID()
 		en
 		retu exists('s:sid') ? {s:sid}_SuperTab('n') : "\<tab>"
 	en

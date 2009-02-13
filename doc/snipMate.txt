@@ -1,7 +1,7 @@
 *snipMate.txt*  Plugin for using TextMate-style snippets in Vim.
 
 Snippets                                       *snippet* *snippets* *snipMate*
-Last Change: February 7, 2009
+Last Change: February 13, 2009
 
 |snipMate-description|   Description
 |snipMate-usage|         Usage
@@ -46,28 +46,29 @@ See |ftplugins|. Global snippets should be installed in 'after/plugin'.
 To ensure user snippets are not lost when upgrading the plugin, name them
 using an ending other than "snips" such as "<filetype>_mysnips.vim"
 
-                                                           *Snip* *GlobalSnip*
-Snip and GlobalSnip Commands~
+                                                          *Snipp* *GlobalSnip*
+Snipp and GlobalSnip Commands~
 
-Snippets are added via the "Snip" and "GlobalSnip" commands. The syntax for
-these are "[Global]Snip <trigger> <text>"; e.g.: >
+Snippets are added via the "Snipp" and "GlobalSnip" commands. The syntax for
+these are "Snipp <trigger> <text>"; e.g.: >
 
- exe "Snip trigger The cursor will be placed here."
+ exe "Snipp trigger The cursor will be placed here."
  exe "GlobalSnip another_trigger foo"
 
-"Snip" creates snippets local to the buffer, while "GlobalSnip" creates
-global snippets.
+"Snipp" creates snippets local to the buffer, while "GlobalSnip" creates
+global snippets. "Snipp" is used instead of "Snip" to avoid conflicts with the
+imaps.vim script that uses that command name.
 
 These commands are conveniently bound to snippets themselves; "snip" and
-"gsnip", respectively. So to expand a Snip command with double quotes,
-type snip<tab>. Single quote Snip and GlobalSnip commands are bound
+"gsnip", respectively. So to expand a Snipp command with double quotes,
+type snip<tab>. Single quote Snipp and GlobalSnip commands are bound
 to the snippets "snipp" and "gsnipp". See |literal-string| for the
 difference between single and double quotes.
 
-                                            *multi_snip* *Snip!* *GlobalSnip!*
-To specify that a snippet can have multiple matches, use the Snip or
+                                           *multi_snip* *Snipp!* *GlobalSnip!*
+To specify that a snippet can have multiple matches, use the Snipp or
 GlobalSnip command followed by a bang (!). The syntax for these are
-'[Global]Snip! <trigger> "<name>" <text>'. (Note that the name must be
+'Snipp! <trigger> "<name>" <text>'. (Note that the name must be
 enclosed in double quotes). E.g.: >
 
  exe 'Snip! trigger "Snippet name #1" expand_this_text'
@@ -96,7 +97,7 @@ cursor is to be placed next, use "${#}", where the # is the number of the tab
 stop. E.g., to place the cursor first on the id of a <div> tag, and then allow
 the user to <tab> to the middle of it:
  >
- exe "Snip div <div id=\"${1}\">\n\t${2}\n</div>"
+ exe "Snipp div <div id=\"${1}\">\n\t${2}\n</div>"
 <
                         *snipMate-placeholders* *snipMate-${#:}* *snipMate-$#*
 Placeholders ~
@@ -105,7 +106,7 @@ Placeholder text can be supplied using "${#:text}", where # is the number of
 the tab stop. This text then can be copied throughout the snippet using "$#",
 given # is the same number as used before. So, to make a C for loop: >
 
- exe "Snip for for (${2:i}; $2 < ${1:count}; $1++) {\n\t${4}\n}"
+ exe "Snipp for for (${2:i}; $2 < ${1:count}; $1++) {\n\t${4}\n}"
 
 This will cause "count" to first be selected and change if the user starts
 typing. When <tab> is pressed, the "i" in ${2}'s position will be selected;
@@ -115,7 +116,7 @@ NOTE: "$#" syntax is used only for variables, not for tab stops as in TextMate.
 
 Variables within variables are also possible. For instance: >
 
- exe 'Snip opt <option value="${1:option}">${2:$1}</option>'
+ exe 'Snipp opt <option value="${1:option}">${2:$1}</option>'
 
 Will, as usual, cause "option" to first be selected and update all the $1
 variables if the user starts typing. Since one of these variables is inside of
@@ -125,7 +126,7 @@ allowing the user to change it if he wishes.
 To copy a value throughout a snippet without supplying default text, simply
 use the "${#:}" construct without the text; e.g.: >
 
- exe 'Snip foo${1:}bar$1'
+ exe 'Snipp foo${1:}bar$1'
 <                                                          *snipMate-commands*
 Interpolated Vim Script ~
 
@@ -133,7 +134,7 @@ Snippets can also contain Vim script commands that are executed (via |eval()|)
 when the snippet is inserted. Commands are given inside backticks (`...`); for
 TextMates's functionality, use the |system()| function. E.g.: >
 
- exe 'Snip date `system("date +%Y-%m-%d")`'
+ exe 'Snipp date `system("date +%Y-%m-%d")`'
 
 will insert the current date, assuming you are on a Unix system. Note you can
 also (and should) use |strftime()| for this example.
@@ -150,9 +151,9 @@ has not been named. "$1" in the first argument is replaced with the filename;
 if you only want the filename to be returned, the first argument can be left
 blank. Examples: >
 
- exe 'Snip filename `Filename()`'
- exe 'Snip filename_with_default `Filename("", "name")`'
- exe 'Snip filename_foo `Filename("$1_foo")`'
+ exe 'Snipp filename `Filename()`'
+ exe 'Snipp filename_with_default `Filename("", "name")`'
+ exe 'Snipp filename_foo `Filename("$1_foo")`'
 
 
 The first example returns the filename if it the file has been named, and an
@@ -165,7 +166,19 @@ The g:snips_author string (similar to $TM_FULLNAME in TextMate) should be set
 to your name; it can then be used in snippets to automatically add it. E.g.: >
 
  let g:snips_author = 'Hubert Farnsworth'
- exe 'Snip name `g:snips_author`'
+ exe 'Snipp name `g:snips_author`'
+<
+                                                              *snipMate-remap*
+snipMate does not come with a setting to customize the trigger key, but you
+can remap it easily in the two lines it's defined in
+'~/.vim/after/plugin/snipMate.vim'. For instance, to change the trigger key
+to shift-tab, just change this: >
+ ino <tab> <c-r>=ExpandSnippet()<cr>
+ snor <tab> <esc>i<right><c-r>=ExpandSnippet()<cr>
+
+to this: >
+ ino <s-tab> <c-r>=ExpandSnippet()<cr>
+ snor <s-tab> <esc>i<right><c-r>=ExpandSnippet()<cr>
 
 ==============================================================================
 FEATURES                                                   *snipMate-features*
