@@ -1,7 +1,7 @@
-if !exists('loaded_snips') || exists('s:did_snips')
+if !exists('loaded_snips') || exists('b:did_tex_snips')
 	fini
 en
-let s:did_snips = 1
+let b:did_tex_snips = 1
 
 " \begin{}...\end{}
 exe "Snipp begin \\begin{${1:env}}\n\t${2}\n\\end{$1}"

@@ -1,7 +1,7 @@
-if !exists('loaded_snips') || exists('s:did_snips')
+if !exists('loaded_snips') || exists('b:did_python_snips')
 	fini
 en
-let s:did_snips = 1
+let b:did_python_snips = 1
 
 " New Class
 exe "Snipp cl class ${1:ClassName}(${2:object}):\n\t\"\"\"${3:docstring for $1}\"\"\"\n\tdef __init__(self, ${4:arg}):\n\t\t${5:super($1, self).__init__()}\n\t\tself.$4 = $4\n\t\t${6}"

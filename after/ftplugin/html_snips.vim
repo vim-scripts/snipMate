@@ -1,7 +1,7 @@
-if !exists('g:loaded_snips') || exists('s:did_snips')
+if !exists('g:loaded_snips') || exists('b:did_html_snips')
 	fini
 en
-let s:did_snips = 1
+let b:did_html_snips = 1
 let c = &ft == 'xhtml' ? ' /' : ''
 
 " Some useful Unicode entities

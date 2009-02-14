@@ -1,7 +1,7 @@
-if !exists('g:loaded_snips') || exists('s:did_snips')
+if !exists('g:loaded_snips') || exists('b:did_c_snips')
 	fini
 en
-let s:did_snips = 1
+let b:did_c_snips = 1
 
 " main()
 exe "Snipp main int main (int argc, char const* argv[])\n{\n\t${1}\n\treturn 0;\n}"
@@ -29,7 +29,7 @@ exe "Snipp do do {\n\t${2:/* code */}\n} while (${1:/* condition */});"
 " While Loop
 exe "Snipp wh while (${1:/* condition */}) {\n\t${2:/* code */}\n}"
 " For Loop
-exe "Snipp for for (${2:i} = 0; $2 < ${1:count}; $2${3:++}) {\n\t${4:/* code */}\n}"
+exe "Snipp for for (${2:i} = 0; $2 < ${1:count}; $2${3:++}) {\n\t${4:/* code */}\n}${5}"
 " Custom For Loop
 exe "Snipp forr for (${1:i} = 0; ${2:$1 < 5}; $1${3:++}) {\n\t${4:/* code */}\n}"
 " Function

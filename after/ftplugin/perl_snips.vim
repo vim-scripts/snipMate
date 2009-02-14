@@ -1,7 +1,7 @@
-if !exists('loaded_snips') || exists('s:did_snips')
+if !exists('loaded_snips') || exists('b:did_perl_snips')
 	fini
 en
-let s:did_snips = 1
+let b:did_perl_snips = 1
 
 " Hash Pointer
 exe 'Snipp .  =>'

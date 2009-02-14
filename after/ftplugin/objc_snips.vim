@@ -1,7 +1,7 @@
-if !exists('loaded_snips') || exists('s:did_snips')
+if !exists('loaded_snips') || exists('b:did_js_snips')
 	fini
 en
-let s:did_snips = 1
+let b:did_js_snips = 1
 
 " #import <...>
 exe 'Snipp imp #import <${1:Cocoa/Cocoa.h}>${2}'
