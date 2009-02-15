@@ -29,7 +29,7 @@ exe "Snipp do do {\n\t${2:/* code */}\n} while (${1:/* condition */});"
 " While Loop
 exe "Snipp wh while (${1:/* condition */}) {\n\t${2:/* code */}\n}"
 " For Loop
-exe "Snipp for for (${2:i} = 0; $2 < ${1:count}; $2${3:++}) {\n\t${4:/* code */}\n}${5}"
+exe "Snipp for for (${2:i} = 0; $2 < ${1:count}; $2${3:++}) {\n\t${4:/* code */}\n}"
 " Custom For Loop
 exe "Snipp forr for (${1:i} = 0; ${2:$1 < 5}; $1${3:++}) {\n\t${4:/* code */}\n}"
 " Function

@@ -1,6 +1,6 @@
 " File:          snipMate.vim
 " Author:        Michael Sanders
-" Version:       0.618033
+" Version:       0.6180339
 " Description:   snipMate.vim implements some of TextMate's snippets features in
 "                Vim. A snippet is a piece of often-typed text that you can
 "                insert into your document using a trigger word followed by a "<tab>".
@@ -8,7 +8,7 @@
 "                For more help see snipMate.txt; you can do this by doing:
 "                :helptags ~/.vim/doc
 "                :h snipMate.txt
-" Last Modified: February 13, 2009.
+" Last Modified: February 15, 2009.
 
 if exists('g:loaded_snips') || &cp || version < 700
 	fini
@@ -22,7 +22,7 @@ au FileType vim let b:Snippet_snip = 'exe "Snipp ${1:trigger}"${2}'
 			\|  let b:Snippet_gsnipp = "exe 'GlobalSnip ${1:trigger}'${2}"
 
 com! -nargs=+ -bang Snipp cal s:MakeSnippet(<q-args>, 'b', <bang>0)
-com! -nargs=+ -bang GlobalSnipp cal s:MakeSnippet(<q-args>, 'g', <bang>0)
+com! -nargs=+ -bang GlobalSnip cal s:MakeSnippet(<q-args>, 'g', <bang>0)
 
 if !exists('g:snips_author') | let g:snips_author = 'Me' | en
 
@@ -152,8 +152,8 @@ fun s:Count(haystack, needle)
 	let counter = 0
 	let index = stridx(a:haystack, a:needle)
 	wh index != -1
-		let counter += 1
 		let index = stridx(a:haystack, a:needle, index+1)
+		let counter += 1
 	endw
 	retu counter
 endf
@@ -176,6 +176,7 @@ fun! ExpandSnippet()
 
 		if exists('snippet')
 			if snippet == '' | retu '' | en " if user cancelled multi snippet, quit
+			let b:word = word
 			" if word is a trigger for a snippet, delete the trigger & expand
 			" the snippet (BdE doesn't work for just a single character)
 			if len == 1 | norm! h"_x
@@ -221,7 +222,9 @@ fun! ExpandSnippet()
 			cal setline(lnum, line.snip[0])
 
 			" for some reason the cursor needs to move one right after this
-			if line != '' && afterCursor == '' | let col += 1 | en
+			if line != '' && afterCursor == '' && &ve != 'all' && &ve != 'onemore'
+				let col += 1
+			en
 			" autoindent snippet according to previous indentation
 			let tab = matchstr(line, '^.\{-}\ze\(\S\|$\)')
 			cal append(lnum, tab != '' ? map(snip[1:], "'".tab."'.v:val") : snip[1:])
@@ -289,9 +292,9 @@ fun! ExpandSnippet()
 			en
 			retu ''
 		en
-		if !exists('s:sid') && exists('g:SuperTabMappingForward') 
+		if !exists('s:sid') && exists('g:SuperTabMappingForward')
 					\ && g:SuperTabMappingForward == "<tab>"
-			cal s:GetSupertabSID()
+			cal s:GetSuperTabSID()
 		en
 		retu exists('s:sid') ? {s:sid}_SuperTab('n') : "\<tab>"
 	en
@@ -407,10 +410,10 @@ fun! ExpandSnippet()
 	retu ''
 endf
 
-fun s:GetSupertabSID()
+fun s:GetSuperTabSID()
 	let a_save = @a
 	redir @a
-	exe 'sil fun'
+	exe 'sil fu /SuperTab$'
 	redir END
 	let s:sid = matchstr(@a, '<SNR>\d\+\ze_SuperTab(command)')
 	let @a = a_save
