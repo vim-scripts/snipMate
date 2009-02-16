@@ -1,6 +1,6 @@
 " File:          snipMate.vim
 " Author:        Michael Sanders
-" Version:       0.6180339
+" Version:       0.61803399
 " Description:   snipMate.vim implements some of TextMate's snippets features in
 "                Vim. A snippet is a piece of often-typed text that you can
 "                insert into your document using a trigger word followed by a "<tab>".
@@ -8,7 +8,7 @@
 "                For more help see snipMate.txt; you can do this by doing:
 "                :helptags ~/.vim/doc
 "                :h snipMate.txt
-" Last Modified: February 15, 2009.
+" Last Modified: February 16, 2009.
 
 if exists('g:loaded_snips') || &cp || version < 700
 	fini
@@ -28,9 +28,8 @@ if !exists('g:snips_author') | let g:snips_author = 'Me' | en
 
 fun! Filename(...)
 	let filename = expand('%:t:r')
-	if filename == '' | retu exists('a:2') ? a:2 : '' | en
-	if !exists('a:1') || a:1 == '' | retu filename | en
-	retu substitute(a:1, '$1', filename, 'g')
+	if filename == '' | retu a:0 == 2 ? a:2 : '' | en
+	retu !a:0 || a:1 == '' ? filename : substitute(a:1, '$1', filename, 'g')
 endf
 
 " escapes special characters in snippet triggers
