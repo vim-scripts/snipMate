@@ -1,6 +1,6 @@
 " These are the mappings for snipMate.vim. Putting it here ensures that it 
 " will be mapped after other plugins such as supertab.vim.
-if exists('s:did_snips_mappings')
+if exists('s:did_snips_mappings') || &cp || version < 700
 	fini
 en
 let s:did_snips_mappings = 1

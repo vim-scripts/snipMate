@@ -1,7 +1,7 @@
 *snipMate.txt*  Plugin for using TextMate-style snippets in Vim.
 
 Snippets                                       *snippet* *snippets* *snipMate*
-Last Change: February 13, 2009
+Last Change: February 21, 2009
 
 |snipMate-description|   Description
 |snipMate-usage|         Usage
@@ -86,6 +86,11 @@ to add: >
  en
 
 to the top of your snippets files.
+
+                                     *snipMate-expandtab* *snipMate-indenting*
+If you would like your snippets to use spaces instead of tabs, just enable
+'expandtab' and set 'softtabstop' to your preferred amount of spaces. If
+'softtabstop' is not set, 'shiftwidth' is used instead.
 
 ==============================================================================
 SYNTAX                                       *snipMate-syntax* *snipMate-${#}*
@@ -184,14 +189,13 @@ to this: >
 FEATURES                                                   *snipMate-features*
 
 snipMate.vim has the following features among others:
-  - The syntax of snippets is very similar to TextMate's allowing
+  - The syntax of snippets is very similar to TextMate's, allowing
     easy conversion.
   - The position of the snippet is kept transparently (i.e. it does not use
-    regexes from text inserted in the buffer to track your position), which
-    allows you to escape out of an incomplete snippet, something particularly
-    useful in Vim.
-  - Variables in snippets are updated as-you-type
-  - Snippets can have multiple matches
+    markers/placeholders written to the buffer), which allows you to escape
+    out of an incomplete snippet, something particularly useful in Vim.
+  - Variables in snippets are updated as-you-type.
+  - Snippets can have multiple matches.
   - Snippets can be out of order. For instance, in a do...while loop, the
     condition can be added before the code.
 
@@ -220,7 +224,7 @@ Perhaps some of these features will be added in a later release.
 CONTACT                                   *snipMate-contact* *snipMate-author*
 
 To contact the author (Michael Sanders), please email:
- msanders42 <at> g_NOSPAMPLEASE_mail <dot> com
+ msanders42+snipmate <at> gmail <dot> com
 
 I greatly appreciate any suggestions or improvements offered for the script.
 

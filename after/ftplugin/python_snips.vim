@@ -19,9 +19,9 @@ exe "Snipp try try:\n\t${1:pass}\nexcept ${2:Exception}, ${3:e}:\n\t${4:raise $3
 " Try/Except/Else
 exe "Snipp trye try:\n\t${1:pass}\nexcept ${2:Exception}, ${3:e}:\n\t${4:raise $3}\nelse:\n\t${5:pass}"
 " Try/Except/Finally
-exe "Snipp tryf try:\n\t${1:pass}\nexcept ${2:Exception}, ${3:e}:\n\t${4:raise $3}\nfinally:\n${5:pass}"
+exe "Snipp tryf try:\n\t${1:pass}\nexcept ${2:Exception}, ${3:e}:\n\t${4:raise $3}\nfinally:\n\t${5:pass}"
 " Try/Except/Else/Finally
-exe "Snipp tryef try:\n\t${1:pass}\nexcept ${2:Exception}, ${3:e}:\n\t${4:raise $3}\nelse:\n\t${5:pass}\nfinally:\n${6:pass}"
+exe "Snipp tryef try:\n\t${1:pass}\nexcept ${2:Exception}, ${3:e}:\n\t${4:raise $3}\nelse:\n\t${5:pass}\nfinally:\n\t${6:pass}"
 " if __name__ == '__main__':
 exe "Snipp ifmain if __name__ == '__main__':\n\t${1:main()}"
 " __magic__

@@ -27,9 +27,9 @@ exe 'Snipp dict NSMutableDictionary *${1:dict} = [NSMutableDictionary dictionary
 " NSBezierPath
 exe 'Snipp bez NSBezierPath *${1:path} = [NSBezierPath bezierPath];${2}'
 " Class Method
-exe "Snipp M + (${1:id}) ${2:method}\n{${3}\n\treturn nil;\n}"
+exe "Snipp M + (${1:id})${2:method}\n{${3}\n\treturn nil;\n}"
 " Sub-method (Call super)
-exe "Snipp sm - (${1:id}) ${2:method}:(${3:id})${4:anArgument}\n{\n\t$1 res = [super $2:$4];${5}\n\treturn res;\n}"
+exe "Snipp sm - (${1:id})${2:method}:(${3:id})${4:anArgument}\n{\n\t$1 res = [super $2:$4];${5}\n\treturn res;\n}"
 " Method: Initialize
 exe "Snipp I + (void) initialize\n{\n\t[[NSUserDefaults standardUserDefaults] registerDefaults:[NSDictionary dictionaryWIthObjectsAndKeys:\n\t\t${1}@\"value\", @\"key\",\n\t\tnil]];\n}"
 " Accessor Methods For:

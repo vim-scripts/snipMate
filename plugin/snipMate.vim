@@ -1,6 +1,6 @@
 " File:          snipMate.vim
 " Author:        Michael Sanders
-" Version:       0.61803399
+" Version:       0.6942
 " Description:   snipMate.vim implements some of TextMate's snippets features in
 "                Vim. A snippet is a piece of often-typed text that you can
 "                insert into your document using a trigger word followed by a "<tab>".
@@ -8,7 +8,7 @@
 "                For more help see snipMate.txt; you can do this by doing:
 "                :helptags ~/.vim/doc
 "                :h snipMate.txt
-" Last Modified: February 16, 2009.
+" Last Modified: February 21, 2009.
 
 if exists('g:loaded_snips') || &cp || version < 700
 	fini
@@ -120,7 +120,7 @@ fun s:UpdateChangedSnip(entering)
 			let s:endSnip += col('$') - s:prevLen[1]
 			let s:prevLen = [line('$'), col('$')]
 		en
-		if changeLine != 0 "&& !a:entering
+		if changeLine != 0
 			let s:endSnipLine += changeLine
 			let s:endSnip = col
 		en
@@ -158,10 +158,18 @@ fun s:Count(haystack, needle)
 endf
 
 fun! ExpandSnippet()
+	if pumvisible() " update snippet if completion is used, or deal with supertab
+		if exists('s:sid') | retu {s:sid}_SuperTab('n') | en
+		cal feedkeys("\<esc>a", 'n') | cal s:UpdateChangedSnip(0)
+	en
 	if !exists('s:snipPos') " don't expand snippets within snippets
+		if !exists('s:sid') && exists('g:SuperTabMappingForward')
+					\ && g:SuperTabMappingForward == "<tab>"
+			cal s:GetSuperTabSID()
+		en
 		" get word under cursor
 		let word = matchstr(getline('.'), '\(^\|\s\)\zs\S\+\%'.col('.').'c\ze\($\|\s\)')
-		let len = len(word) | let word = s:Hash(word)
+		let singlechar = len(word) == 1 | let word = s:Hash(word)
 
 		if exists('b:Snippet_'.word)
 			let snippet = b:Snippet_{word}
@@ -177,8 +185,8 @@ fun! ExpandSnippet()
 			if snippet == '' | retu '' | en " if user cancelled multi snippet, quit
 			let b:word = word
 			" if word is a trigger for a snippet, delete the trigger & expand
-			" the snippet (BdE doesn't work for just a single character)
-			if len == 1 | norm! h"_x
+			" the snippet
+			if singlechar | norm! h"_x
 			el | norm! B"_dE
 			en
 			let lnum = line('.')
@@ -213,7 +221,7 @@ fun! ExpandSnippet()
 				let i += 1
 			endw
 			" expand tabs to spaces if 'expandtab' is set
-			if &et | let snippet = substitute(snippet, '\t', repeat(' ', &sts), 'g') | en
+			if &et | let snippet = substitute(snippet, '\t', repeat(' ', &sts ? &sts : &sw), 'g') | en
 
 			let snip = split(substitute(snippet, '$\d\|${\d.\{-}}', '', 'g'), "\n", 1)
 			if afterCursor != '' | let snip[-1] .= afterCursor | en
@@ -290,10 +298,6 @@ fun! ExpandSnippet()
 				cal cursor(lnum+len, tab+len(snip[-1])+(len ? 0 : col))
 			en
 			retu ''
-		en
-		if !exists('s:sid') && exists('g:SuperTabMappingForward')
-					\ && g:SuperTabMappingForward == "<tab>"
-			cal s:GetSuperTabSID()
 		en
 		retu exists('s:sid') ? {s:sid}_SuperTab('n') : "\<tab>"
 	en
