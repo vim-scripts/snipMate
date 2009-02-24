@@ -1,6 +1,6 @@
 " File:          snipMate.vim
 " Author:        Michael Sanders
-" Version:       0.6942
+" Version:       0.6954
 " Description:   snipMate.vim implements some of TextMate's snippets features in
 "                Vim. A snippet is a piece of often-typed text that you can
 "                insert into your document using a trigger word followed by a "<tab>".
@@ -8,7 +8,7 @@
 "                For more help see snipMate.txt; you can do this by doing:
 "                :helptags ~/.vim/doc
 "                :h snipMate.txt
-" Last Modified: February 21, 2009.
+" Last Modified: February 24, 2009.
 
 if exists('g:loaded_snips') || &cp || version < 700
 	fini
@@ -50,25 +50,16 @@ fun s:MakeSnippet(text, scope, bang)
 		let trigger = a:scope.':Snippet_'.trigger
 	en
 	let end = strpart(a:text, space+1)
-	if !exists(trigger) || a:bang
-		if end != '' && space != -1 && (!a:bang || name != '')
-			if a:bang
-				if !exists(trigger) | let {trigger} = [] | en
-				let {trigger} += [[name, end]]
-			el
-				let {trigger} = end
-			en
-		el
-			echoh ErrorMsg
-			echom 'Error in snipMate.vim: Snippet '.a:text.' is undefined.'
-			echoh None
-		en
+	if end == '' || space == '' || (a:bang && name == '')
+		echom 'Error in snipMate.vim: Snippet '.a:text.' is undefined.'
+	elsei !exists(trigger)
+		let {trigger} = a:bang ? [[name, end]] : end
+	elsei a:bang
+		let {trigger} += [[name, end]]
 	el
-		echoh WarningMsg
 		echom 'Warning in snipMate.vim: Snippet '.strpart(a:text, 0, stridx(a:text, ' '))
 				\ .' is already defined. See :h multi_snip for help on snippets'
 				\ .' with multiple matches.'
-		echoh None
 	en
 endf
 
@@ -158,18 +149,19 @@ fun s:Count(haystack, needle)
 endf
 
 fun! ExpandSnippet()
+	if !exists('s:sid') && exists('g:SuperTabMappingForward')
+				\ && g:SuperTabMappingForward == "<tab>"
+		cal s:GetSuperTabSID()
+	en
 	if pumvisible() " update snippet if completion is used, or deal with supertab
 		if exists('s:sid') | retu {s:sid}_SuperTab('n') | en
 		cal feedkeys("\<esc>a", 'n') | cal s:UpdateChangedSnip(0)
 	en
+
 	if !exists('s:snipPos') " don't expand snippets within snippets
-		if !exists('s:sid') && exists('g:SuperTabMappingForward')
-					\ && g:SuperTabMappingForward == "<tab>"
-			cal s:GetSuperTabSID()
-		en
-		" get word under cursor
-		let word = matchstr(getline('.'), '\(^\|\s\)\zs\S\+\%'.col('.').'c\ze\($\|\s\)')
-		let singlechar = len(word) == 1 | let word = s:Hash(word)
+		" get word before cursor
+		let origWord = matchstr(getline('.'), '\S\+\%'.col('.').'c')
+		let word = s:Hash(origWord)
 
 		if exists('b:Snippet_'.word)
 			let snippet = b:Snippet_{word}
@@ -183,25 +175,26 @@ fun! ExpandSnippet()
 
 		if exists('snippet')
 			if snippet == '' | retu '' | en " if user cancelled multi snippet, quit
-			let b:word = word
+			let col = col('.') | let lnum = line('.')
 			" if word is a trigger for a snippet, delete the trigger & expand
 			" the snippet
-			if singlechar | norm! h"_x
-			el | norm! B"_dE
-			en
-			let lnum = line('.')
-			let col = col('.')
+			exe 'sil s/'.origWord.'\%#//'
+			let col -= len(origWord) | if col > 1 | let col -= 1 | en
 
 			let afterCursor = strpart(getline('.'), col-1)
 			if afterCursor != "\t" && afterCursor != ' ' | sil s/\%#.*//
 			el | let afterCursor = '' | en
 
-			" evaluate eval expressions
+			" evaluate eval (`...`) expressions
+			" Using a loop here instead of a regex fixes a bug with nested "\="
 			if stridx(snippet, '`') != -1
-				let snippet = substitute(substitute(snippet, '`\(.\{-}\)`',
-							\ '\=substitute(eval(submatch(1)), "\n\\%$", "", "")', 'g'),
-							\ "\r", "\n", 'g')
+				wh match(snippet, '`.\{-}`') != -1
+					let snippet = substitute(snippet, '`.\{-}`',
+							\ substitute(eval(matchstr(snippet, '`\zs.\{-}\ze`')),
+							\ "\n\\%$", '', ''), '')
+				endw
 				if snippet == '' | retu '' | en " avoid an error if the snippet is now empty
+				let snippet = substitute(snippet, "\r", "\n", 'g')
 			en
 
 			" place all text after a colon in a tab stop after the tab stop
@@ -228,7 +221,6 @@ fun! ExpandSnippet()
 			let line = getline(lnum)
 			cal setline(lnum, line.snip[0])
 
-			" for some reason the cursor needs to move one right after this
 			if line != '' && afterCursor == '' && &ve != 'all' && &ve != 'onemore'
 				let col += 1
 			en
@@ -292,10 +284,10 @@ fun! ExpandSnippet()
 				let s:prevLen = [line('$'), col('$')]
 				if s:snipPos[0][2] != -1 | retu s:SelectWord() | en
 			el
-				unl s:snipPos
 				" place cursor at end of snippet if no tab stop is given
-				let len = len(snip)-1
-				cal cursor(lnum+len, tab+len(snip[-1])+(len ? 0 : col))
+				unl s:snipPos | let len = len(snip)-1
+				cal cursor(lnum + len, tab + len(snip[-1]) - len(afterCursor)
+							\ + (len ? 0: col))
 			en
 			retu ''
 		en
