@@ -1,6 +1,6 @@
 " File:          snipMate.vim
 " Author:        Michael Sanders
-" Version:       0.6954
+" Version:       0.6955
 " Description:   snipMate.vim implements some of TextMate's snippets features in
 "                Vim. A snippet is a piece of often-typed text that you can
 "                insert into your document using a trigger word followed by a "<tab>".
@@ -149,16 +149,16 @@ fun s:Count(haystack, needle)
 endf
 
 fun! ExpandSnippet()
-	if !exists('s:sid') && exists('g:SuperTabMappingForward')
-				\ && g:SuperTabMappingForward == "<tab>"
-		cal s:GetSuperTabSID()
-	en
 	if pumvisible() " update snippet if completion is used, or deal with supertab
-		if exists('s:sid') | retu {s:sid}_SuperTab('n') | en
+		if exists('s:sid') | retu "<c-n>" | en
 		cal feedkeys("\<esc>a", 'n') | cal s:UpdateChangedSnip(0)
 	en
 
 	if !exists('s:snipPos') " don't expand snippets within snippets
+		if !exists('s:sid') && exists('g:SuperTabMappingForward')
+					\ && g:SuperTabMappingForward == "<tab>"
+			cal s:GetSuperTabSID()
+		en
 		" get word before cursor
 		let origWord = matchstr(getline('.'), '\S\+\%'.col('.').'c')
 		let word = s:Hash(origWord)
@@ -179,10 +179,10 @@ fun! ExpandSnippet()
 			" if word is a trigger for a snippet, delete the trigger & expand
 			" the snippet
 			exe 'sil s/'.origWord.'\%#//'
-			let col -= len(origWord) | if col > 1 | let col -= 1 | en
+			let col -= len(origWord)
 
 			let afterCursor = strpart(getline('.'), col-1)
-			if afterCursor != "\t" && afterCursor != ' ' | sil s/\%#.*//
+			if afterCursor != "\t" && afterCursor != ' ' | sil exe 's/\%'.col.'c.*//'
 			el | let afterCursor = '' | en
 
 			" evaluate eval (`...`) expressions
@@ -218,10 +218,11 @@ fun! ExpandSnippet()
 
 			let snip = split(substitute(snippet, '$\d\|${\d.\{-}}', '', 'g'), "\n", 1)
 			if afterCursor != '' | let snip[-1] .= afterCursor | en
+			" let line = strpart(getline(lnum), 0, col-1)
 			let line = getline(lnum)
 			cal setline(lnum, line.snip[0])
 
-			if line != '' && afterCursor == '' && &ve != 'all' && &ve != 'onemore'
+			if line != '' && col == 1 && afterCursor == '' && &ve !~ 'all\|onemore'
 				let col += 1
 			en
 			" autoindent snippet according to previous indentation
