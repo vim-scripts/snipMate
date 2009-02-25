@@ -1,6 +1,6 @@
 " File:          snipMate.vim
 " Author:        Michael Sanders
-" Version:       0.6955
+" Version:       0.6956
 " Description:   snipMate.vim implements some of TextMate's snippets features in
 "                Vim. A snippet is a piece of often-typed text that you can
 "                insert into your document using a trigger word followed by a "<tab>".
@@ -150,7 +150,7 @@ endf
 
 fun! ExpandSnippet()
 	if pumvisible() " update snippet if completion is used, or deal with supertab
-		if exists('s:sid') | retu "<c-n>" | en
+		if exists('s:sid') | retu "\<c-n>" | en
 		cal feedkeys("\<esc>a", 'n') | cal s:UpdateChangedSnip(0)
 	en
 
