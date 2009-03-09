@@ -1,8 +1,13 @@
-if !exists('loaded_snips') || exists('b:did_python_snips')
+if !exists('loaded_snips') || exists('s:did_python_snips')
 	fini
 en
-let b:did_python_snips = 1
+let s:did_python_snips = 1
+let snippet_filetype = 'python'
 
+" #!/usr/bin/python
+exe "Snipp #! #!/usr/bin/python\n"
+" While
+exe "Snipp wh while ${1:condition}:\n\t${2:# code...}"
 " New Class
 exe "Snipp cl class ${1:ClassName}(${2:object}):\n\t\"\"\"${3:docstring for $1}\"\"\"\n\tdef __init__(self, ${4:arg}):\n\t\t${5:super($1, self).__init__()}\n\t\tself.$4 = $4\n\t\t${6}"
 " New Function
@@ -10,7 +15,7 @@ exe "Snipp def def ${1:fname}(${2:`indent('.') ? 'self' : ''`}):\n\t\"\"\"${3:do
 " New Method
 exe "Snipp defs def ${1:mname}(self, ${2:arg})):\n\t${3:pass}"
 " New Property
-exe "Snipp property def def ${1:foo}():\n\tdoc = \"${2:The $1 property.}\"\n\tdef fget(self):\n\t\t\t${3:return self._$1}\n\tdef fset(self, value):\n\t\t"
+exe "Snipp property def ${1:foo}():\n\tdoc = \"${2:The $1 property.}\"\n\tdef fget(self):\n\t\t\t${3:return self._$1}\n\tdef fset(self, value):\n\t\t"
 \."${4:self._$1 = value}\n\tdef fdel(self):\n\t\t\t${5:del self._$1}\n\treturn locals()\n$1 = property(**$1())${6}"
 " Self
 exe 'Snipp . self.'

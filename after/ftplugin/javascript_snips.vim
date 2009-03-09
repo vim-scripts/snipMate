@@ -1,7 +1,8 @@
-if !exists('loaded_snips') || exists('b:did_js_snips')
+if !exists('loaded_snips') || exists('s:did_js_snips')
 	fini
 en
-let b:did_js_snips = 1
+let s:did_js_snips = 1
+let snippet_filetype = 'javascript'
 
 " Prototype
 exe "Snipp proto ${1:class_name}.prototype.${2:method_name} =\nfunction(${3:first_argument}) {\n\t${4:// body...}\n};"

@@ -1,10 +1,11 @@
-if !exists('g:loaded_snips') || exists('b:did_html_snips')
+let snippet_filetype = stridx(&ft, 'xhtml') > -1 ? 'xhtml' : 'html'
+if !exists('g:loaded_snips') || exists('s:did_'.snippet_filetype.'_snips')
 	fini
 en
-let b:did_html_snips = 1
+let s:did_{snippet_filetype}_snips = 1
 
 " automatically add a closing '/' to the end of xhtml tags
-let c = &ft == 'xhtml' ? ' /' : ''
+let c = snippet_filetype == 'xhtml' ? ' /' : ''
 
 " Some useful Unicode entities
 " Non-Breaking Space

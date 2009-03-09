@@ -1,8 +1,11 @@
-if !exists('loaded_snips') || exists('b:did_perl_snips')
+if !exists('loaded_snips') || exists('s:did_perl_snips')
 	fini
 en
-let b:did_perl_snips = 1
+let s:did_perl_snips = 1
+let snippet_filetype = 'perl'
 
+" #!/usr/bin/perl
+exe "Snipp #! #!/usr/bin/perl\n"
 " Hash Pointer
 exe 'Snipp .  =>'
 " Function

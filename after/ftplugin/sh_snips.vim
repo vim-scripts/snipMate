@@ -1,8 +1,11 @@
-if !exists('loaded_snips') || exists('b:did_sh_snips')
+if !exists('loaded_snips') || exists('s:did_sh_snips')
 	fini
 en
-let b:did_sh_snips = 1
+let s:did_sh_snips = 1
+let snippet_filetype = 'sh'
 
+" #!/bin/bash
+exe "Snipp #! #!/bin/bash\n"
 exe "Snipp if if [[ ${1:condition} ]]; then\n\t${2:#statements}\nfi"
 exe "Snipp elif elif [[ ${1:condition} ]]; then\n\t${2:#statements}"
 exe "Snipp for for (( ${2:i} = 0; $2 < ${1:count}; $2++ )); do\n\t${3:#statements}\ndone"

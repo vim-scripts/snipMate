@@ -1,7 +1,8 @@
-if !exists('loaded_snips') || exists('b:did_objc_snips')
+if !exists('loaded_snips') || exists('s:did_objc_snips')
 	fini
 en
-let b:did_objc_snips = 1
+let s:did_objc_snips = 1
+let snippet_filetype = 'objc'
 
 " #import <...>
 exe 'Snipp imp #import <${1:Cocoa/Cocoa.h}>${2}'
