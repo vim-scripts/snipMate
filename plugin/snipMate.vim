@@ -1,7 +1,7 @@
 " File:          snipMate.vim
 " Author:        Michael Sanders
-" Version:       0.71
-" Last Updated:  March 8, 2009.
+" Version:       0.72
+" Last Updated:  March 10, 2009.
 " Description:   snipMate.vim implements some of TextMate's snippets features in
 "                Vim. A snippet is a piece of often-typed text that you can
 "                insert into your document using a trigger word followed by a "<tab>".
@@ -195,15 +195,6 @@ fun s:ExpandSnippet(col)
 	let indent = matchend(line, '^.\{-}\ze\(\S\|$\)') + 1
 	call append(lnum, map(snip[1:], "'".strpart(line, 0, indent - 1)."'.v:val"))
 
-	if exists('s:snipPos') && stridx(s:snippet, '${1') != -1
-		if exists('s:update')
-			call s:UpdateSnip(len(snip[-1]) - len(afterCursor))
-			call s:UpdatePlaceholderTabStops()
-		else
-			call s:UpdateTabStops(len(snip) - 1, len(snip[-1]) - len(afterCursor))
-		endif
-	endif
-
 	let snipLen = s:BuildTabStops(lnum, col - indent, indent)
 	unl s:snippet
 
@@ -286,9 +277,10 @@ endf
 fun s:BuildTabStops(lnum, col, indent)
 	let snipPos = []
 	let i = 1
+	let withoutVars = substitute(s:snippet, '$\d', '', 'g')
 	wh stridx(s:snippet, '${'.i) != -1
-		let beforeTabStop = matchstr(s:snippet, '^.*\ze${'.i)
-		let withoutOthers = substitute(s:snippet, '$\d\|${'.i.'\@!\d.\{-}}', '', 'g')
+		let beforeTabStop = matchstr(withoutVars, '^.*\ze${'.i)
+		let withoutOthers = substitute(withoutVars, '${'.i.'\@!\d.\{-}}', '', 'g')
 		let snipPos += [[a:lnum + s:Count(beforeTabStop, "\n"),
 						\ a:indent + len(matchstr(withoutOthers,
 						\ "^.*\\(\n\\|^\\)\\zs.*\\ze${".i)), -1]]
@@ -297,9 +289,9 @@ fun s:BuildTabStops(lnum, col, indent)
 		endif
 
 		" Get all $# matches in another list, if ${#:name} is given
-		if stridx(s:snippet, '${'.i.':') != -1
+		if stridx(withoutVars, '${'.i.':') != -1
 			let j = i-1
-			let snipPos[j][2] = len(matchstr(s:snippet, '${'.i.':\zs.\{-}\ze}'))
+			let snipPos[j][2] = len(matchstr(withoutVars, '${'.i.':\zs.\{-}\ze}'))
 			let snipPos[j] += [[]]
 			let withoutOthers = substitute(s:snippet, '${\d.\{-}}\|$'.i.'\@!\d', '', 'g')
 			wh stridx(withoutOthers, '$'.i) != -1
