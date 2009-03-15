@@ -2,6 +2,7 @@ if !exists('g:loaded_snips') || exists('s:did_cpp_snips')
 	 finish
 endif
 let s:did_cpp_snips = 1
+let snippet_filetype = 'cpp'
 
 " Read File Into Vector
 exe "Snipp readfile std::vector<char> v;\nif (FILE *${2:fp} = fopen(${1:\"filename\"}, \"r\")) {\n\tchar buf[1024];\n\twhile (size_t len = "
