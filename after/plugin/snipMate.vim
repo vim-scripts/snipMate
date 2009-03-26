@@ -12,24 +12,17 @@ snor ' b<bs>'
 snor <right> <esc>a
 snor <left> <esc>bi
 
-au FileType objc,cpp,cs let &ft = expand('<amatch>').'.c'
-
-" By default load snippets in ~/.vim/snippets/<filetype>
-if !exists('snippets_dir')
-	let snippets_dir = $HOME.(has('win16') || has('win32') || has('win64') ?
-							\ '\vimfiles\snippets\' : '/.vim/snippets/')
+" By default load snippets in snippets_dir
+if empty(snippets_dir) || !isdirectory(snippets_dir)
+	finish
 endif
-if !isdirectory(snippets_dir) | finish | endif
 
 if isdirectory(snippets_dir.'_')
 	call ExtractSnips(snippets_dir.'_', '_')
 endif
-au FileType * call s:GetSnippets()
-fun s:GetSnippets()
-	for ft in split(&ft, '\.')
-		if !exists('g:did_ft_'.ft) && isdirectory(g:snippets_dir.ft)
-			call ExtractSnips(g:snippets_dir.ft, ft)
-		endif
-	endfor
-endf
+if filereadable(snippets_dir.'_.snippets')
+	call ExtractSnipsFile(snippets_dir.'_.snippets')
+endif
+
+au FileType * if &ft != 'help' | call GetSnippets(g:snippets_dir) | endif
 " vim:noet:sw=4:ts=4:ft=vim
