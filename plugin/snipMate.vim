@@ -1,7 +1,7 @@
 " File:          snipMate.vim
 " Author:        Michael Sanders
-" Version:       0.74
-" Last Updated:  March 26, 2009.
+" Version:       0.75
+" Last Modified: March 27 2009
 " Description:   snipMate.vim implements some of TextMate's snippets features in
 "                Vim. A snippet is a piece of often-typed text that you can
 "                insert into your document using a trigger word followed by a "<tab>".
@@ -74,7 +74,7 @@ endf
 fun! ExtractSnipsFile(file)
 	if !filereadable(a:file) | return | endif
 	let text = readfile(a:file)
-	let ft = fnamemodify(a:file, ':t:r')
+	let ft = fnamemodify(a:file, ':t:r:s?-.*??')
 	let inSnip = 0
 	for line in text + ["\n"]
 		if inSnip && (line == '' || strpart(line, 0, 1) == "\t")
@@ -151,7 +151,8 @@ fun! TriggerSnippet()
 		sil exe 's/'.escape(trigger, '.^$/\*[]').'\%#//'
 		return snipMate#expandSnip(col)
 	endif
-	return exists('g:SuperTabKey') ? g:SuperTabKey : "\<tab>"
+	return exists('g:SuperTabKey') && getline('.')[col('.')-2] =~ '\S' 
+				\ ? g:SuperTabKey : "\<tab>"
 endf
 
 " Check if word under cursor is snippet trigger; if it isn't, try checking if
