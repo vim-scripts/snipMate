@@ -7,6 +7,9 @@ snippet Imp
 # @selector(...)
 snippet sel
 	@selector(${1:method}:)${3}
+# @"..." string
+snippet s
+	@"${1}"${2}
 # NSLog(...)
 snippet log
 	NSLog(@"${1}"${2});${3}
@@ -61,6 +64,15 @@ snippet m
 # Method declaration
 snippet md
 	- (${1:id})${2:method};${3}
+# IBAction declaration
+snippet iba
+	- (IBAction)${1:method};${2}
+# awakeFromNib method
+snippet wake
+	- (void)awakeFromNib
+	{
+		${1}
+	}
 # Class Method
 snippet M
 	+ (${1:id})${2:method}
@@ -96,6 +108,11 @@ snippet objacc
 		$2 = [aValue retain];
 		[old$2 release];
 	}
+# for (object in array)
+snippet fora
+	for (${1:Class} *${2:Object} in ${3:array}) {
+		${4}
+	}
 snippet forarray
 	unsigned int	${1:object}Count = [${2:array} count];
 	
@@ -119,4 +136,8 @@ snippet ret
 	[${1:foo} retain];${2}
 # release
 snippet rel
-	[${1:foo} release];${2}
+	[${1:foo} release];
+	${2:$1 = nil;}	
+# autorelease
+snippet arel
+	[${1:foo} autorelease];

@@ -36,6 +36,7 @@ fun snipMate#expandSnip(col)
 	" Autoindent snippet according to previous indentation
 	let indent = matchend(line, '^.\{-}\ze\(\S\|$\)') + 1
 	call append(lnum, map(snip[1:], "'".strpart(line, 0, indent - 1)."'.v:val"))
+	if &fen | sil! exe lnum.','.(lnum + len(snip) - 1).'foldopen' | endif
 
 	let snipLen = s:BuildTabStops(lnum, col - indent, indent)
 	unl g:snippet
@@ -399,4 +400,3 @@ fun s:UpdateSnip(...)
 		let g:snipPos[s:curPos][2] = newWordLen
 	endif
 endf
-" vim:noet:sw=4:ts=4:ft=vim

@@ -24,5 +24,5 @@ if filereadable(snippets_dir.'_.snippets')
 	call ExtractSnipsFile(snippets_dir.'_.snippets')
 endif
 
-au FileType * if &ft != 'help' | call GetSnippets(g:snippets_dir) | endif
+au FileType * if &ft != 'help' | call GetSnippets(snippets_dir) | endif
 " vim:noet:sw=4:ts=4:ft=vim
