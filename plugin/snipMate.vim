@@ -1,6 +1,7 @@
 " File:          snipMate.vim
 " Author:        Michael Sanders
-" Version:       0.76
+" Version:       0.77
+" Last Updated:  March 29, 2009.
 " Description:   snipMate.vim implements some of TextMate's snippets features in
 "                Vim. A snippet is a piece of often-typed text that you can
 "                insert into your document using a trigger word followed by a "<tab>".
@@ -103,8 +104,8 @@ fun! ResetSnippets()
 endf
 
 let g:did_ft = {}
-fun! GetSnippets(dir)
-	for ft in split(&ft, '\.')
+fun! GetSnippets(dir, filetype)
+	for ft in split(a:filetype, '\.')
 		if has_key(g:did_ft, ft) | continue | endif
 		for path in split(globpath(a:dir, ft.'/')."\n".
 						\ globpath(a:dir, ft.'-*/'), "\n")
@@ -163,9 +164,9 @@ endf
 fun s:GetSnippet(word, scope)
 	let word = a:word
 	wh !exists('g:snippet')
-		if exists('s:snippets["'.a:scope.'"]['''.word.''']')
+		if exists('s:snippets["'.a:scope.'"]["'.escape(word, '\"').'"]')
 			let g:snippet = s:snippets[a:scope][word]
-		elseif exists('s:multi_snips["'.a:scope.'"]['''.word.''']')
+		elseif exists('s:multi_snips["'.a:scope.'"]["'.escape(word, '\"').'"]')
 			let g:snippet = s:ChooseSnippet(a:scope, word)
 		else
 			if match(word, '\W') == -1 | break | endif
