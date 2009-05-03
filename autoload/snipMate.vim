@@ -61,7 +61,7 @@ fun s:ProcessSnippet(snip)
 	" Evaluate eval (`...`) expressions.
 	" Using a loop here instead of a regex fixes a bug with nested "\=".
 	if stridx(snippet, '`') != -1
-		while match(snippet, '`.\{-}`') != -1
+		wh match(snippet, '`.\{-}`') != -1
 			let snippet = substitute(snippet, '`.\{-}`',
 						\ substitute(eval(matchstr(snippet, '`\zs.\{-}\ze`')),
 						\ "\n\\%$", '', ''), '')
@@ -78,7 +78,7 @@ fun s:ProcessSnippet(snip)
 	" the colon in their associated ${#}.
 	" (e.g. "${1:foo}" turns all "$1"'s into "foo")
 	let i = 1
-	while stridx(snippet, '${'.i) != -1
+	wh stridx(snippet, '${'.i) != -1
 		let s = matchstr(snippet, '${'.i.':\zs.\{-}\ze}')
 		if s != ''
 			let snippet = substitute(snippet, '$'.i, '&'.s, 'g')
@@ -95,7 +95,7 @@ endf
 fun s:Count(haystack, needle)
 	let counter = 0
 	let index = stridx(a:haystack, a:needle)
-	while index != -1
+	wh index != -1
 		let index = stridx(a:haystack, a:needle, index+1)
 		let counter += 1
 	endw
@@ -118,7 +118,7 @@ fun s:BuildTabStops(snip, lnum, col, indent)
 	let snipPos = []
 	let i = 1
 	let withoutVars = substitute(a:snip, '$\d\+', '', 'g')
-	while stridx(a:snip, '${'.i) != -1
+	wh stridx(a:snip, '${'.i) != -1
 		let beforeTabStop = matchstr(withoutVars, '^.*\ze${'.i.'\D')
 		let withoutOthers = substitute(withoutVars, '${'.i.'\@!\d\+.\{-}}', '', 'g')
 		let snipPos += [[a:lnum + s:Count(beforeTabStop, "\n"),
@@ -134,7 +134,7 @@ fun s:BuildTabStops(snip, lnum, col, indent)
 			let snipPos[j][2] = len(matchstr(withoutVars, '${'.i.':\zs.\{-}\ze}'))
 			let snipPos[j] += [[]]
 			let withoutOthers = substitute(a:snip, '${\d\+.\{-}}\|$'.i.'\@!\d\+', '', 'g')
-			while match(withoutOthers, '$'.i.'\D') != -1
+			wh match(withoutOthers, '$'.i.'\D') != -1
 				let beforeMark = matchstr(withoutOthers, '^.\{-}\ze$'.i.'\D')
 				let linecount = a:lnum + s:Count(beforeMark, "\n")
 				let snipPos[j][3] += [[linecount,
